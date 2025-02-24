@@ -18,7 +18,7 @@ object Login
 data class LoginResponse(val token: String, val userId: Long)
 
 @Serializable
-data class Home(val token: String, val userId: Long)
+data class Home(val token: String? = "abcd", val userId: Long? = 0)
 
 @Serializable
 data class Detail(val id: Long? = 0)
