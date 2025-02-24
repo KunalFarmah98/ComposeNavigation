@@ -39,7 +39,10 @@ fun LoginScreen(onLogin: (data: LoginResponse) -> Unit){
     }
 }
 
-
+/**
+ * Composable functions can have the same parameter type as their Type param for their route
+ * Here HomeScreen is defined with Home as route
+ */
 @Composable
 fun HomeScreen(homeData: Home, onDetail: (id: Long)-> Unit, onBack: () -> Unit){
     Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
@@ -64,6 +67,10 @@ fun HomeScreen(homeData: Home, onDetail: (id: Long)-> Unit, onBack: () -> Unit){
     }
 }
 
+/**
+ * Composable functions can have destructed params as their Type param for their route
+ * Here DetailsScreen is defined with Detail as route but we directly take id from the Detail class
+ */
 @Composable
 fun DetailsScreen(id: Long? = 0, onBack: () -> Unit){
     Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {

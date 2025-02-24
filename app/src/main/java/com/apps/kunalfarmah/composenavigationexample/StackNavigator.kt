@@ -26,6 +26,9 @@ fun StackNavigator(){
                     inclusive = true
                 }
             }
+            /**
+             * Never pass navController to composables, instead expose a callback as an argument
+             */
             LoginScreen(onLogin = { response -> navController.navigate(Home(response.token, response.userId), navOptions)})
         }
 
@@ -36,7 +39,9 @@ fun StackNavigator(){
             )
         ) {
             val loginResponse = it.toRoute<Home>()
-
+            /**
+             * Never pass navController to composables, instead expose a callback as an argument
+             */
             HomeScreen(homeData = loginResponse, onDetail = { id -> navController.navigate(Detail(id))}, onBack = {
                 navController.popBackStack().let {
                     if(!it){
@@ -52,11 +57,11 @@ fun StackNavigator(){
                 navDeepLink<Detail>(basePath = "$uri/detailScreen")
             )
         ) {
-            val id = it.toRoute<Detail>().id
+            val detailData = it.toRoute<Detail>()
             Log.d("Deeplink",
                 navDeepLink<Detail>(basePath = "$scheme/detailScreen").uriPattern.toString()
             )
-            DetailsScreen(id = id, onBack = {navController.popBackStack()})
+            DetailsScreen(id = detailData.id, onBack = {navController.popBackStack()})
         }
     }
 }
