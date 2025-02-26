@@ -7,7 +7,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 
 @Composable
-fun BottomTabNavigation(navController: NavHostController, modifier: Modifier, data: Screens.Tabs) {
+fun BottomTabNavigation(navController: NavHostController, modifier: Modifier) {
     NavHost(
         route = Screens.Tabs::class,
         navController = navController,

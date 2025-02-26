@@ -39,7 +39,7 @@ sealed class Screens{
     object Register: Screens()
 
     @Serializable
-    data class Tabs(val token: String? = "tabs", val userId: Long? = 20): Screens()
+    object Tabs: Screens()
 
     @Serializable
     data class Home(val token: String? = "abcd", val userId: Long? = 0): Screens()
@@ -186,7 +186,7 @@ fun TabCScreen(onDetails: (Long?) -> Unit){
 
 
 @Composable
-fun TabsScreen(data: Screens.Tabs, navController: NavHostController){
+fun TabsScreen(navController: NavHostController){
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         bottomBar = {
@@ -228,7 +228,7 @@ fun TabsScreen(data: Screens.Tabs, navController: NavHostController){
         }
 
     ){ paddingValues ->
-        BottomTabNavigation(navController, Modifier.padding(paddingValues), data)
+        BottomTabNavigation(navController, Modifier.padding(paddingValues))
 //        Text(modifier = Modifier.padding(paddingValues), text = "Tabs")
     }
 }
