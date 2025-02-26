@@ -12,7 +12,7 @@ fun AppNavigator(navController: NavHostController){
     val scheme = "composenavigation:/"
     NavHost(
         navController = navController,
-        startDestination = Auth
+        startDestination = Screens.Auth
     ){
         //login flow
         AuthGraph(navController)

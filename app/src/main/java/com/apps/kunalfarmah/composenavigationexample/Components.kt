@@ -1,5 +1,6 @@
 package com.apps.kunalfarmah.composenavigationexample
 
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.material.Icon
@@ -15,6 +16,7 @@ import androidx.navigation.NavHostController
 
 @Composable
 fun AppBar(title: String, navController: NavHostController){
+    val activity = LocalActivity.current
     TopAppBar(
         title = {
             Text(text = title)
@@ -23,7 +25,15 @@ fun AppBar(title: String, navController: NavHostController){
         contentColor = Color.White,
         navigationIcon = {
             when(title) {
-                "Login", "Register" -> null
+                "Login", "Register", "Home" -> IconButton(
+                    onClick = {navController.popBackStack().let{
+                        if(!it){
+                            activity?.finish()
+                        }
+                    } }
+                ) {
+                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Close App")
+                }
                 else -> {
                     IconButton(
                         onClick = {navController.navigateUp()}

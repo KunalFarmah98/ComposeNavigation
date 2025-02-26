@@ -9,19 +9,19 @@ import androidx.navigation.navDeepLink
 import androidx.navigation.toRoute
 
 fun NavGraphBuilder.HomeGraph(navController: NavHostController, activity: Activity?, scheme: String, uri: String){
-    composable<Home>(
+    composable<Screens.Home>(
         deepLinks = listOf(
-            navDeepLink<Home>(basePath = "$scheme/homeScreen"),
-            navDeepLink<Home>(basePath = "$uri/homeScreen")
+            navDeepLink<Screens.Home>(basePath = "$scheme/homeScreen"),
+            navDeepLink<Screens.Home>(basePath = "$uri/homeScreen")
         )
     ) {
-        val loginResponse = it.toRoute<Home>()
+        val loginResponse = it.toRoute<Screens.Home>()
         /**
          * Never pass navController to composables, instead expose a callback as an argument
          */
         HomeScreen(
             homeData = loginResponse,
-            goToTabs = { navController.navigate(Tabs(loginResponse.token, loginResponse.userId)) },
+            goToTabs = { navController.navigate(Screens.Tabs(loginResponse.token, loginResponse.userId)) },
             onBack = {
                 navController.popBackStack().let {
                     if (!it) {
@@ -31,20 +31,20 @@ fun NavGraphBuilder.HomeGraph(navController: NavHostController, activity: Activi
             })
     }
 
-    composable<Tabs> {
-        TabsScreen(data = it.toRoute<Tabs>(), onDetails = { id:Long? -> navController.navigate(Detail(id)) }, onBack = { navController.popBackStack() })
+    composable<Screens.Tabs> {
+        TabsScreen(data = it.toRoute<Screens.Tabs>(), onDetails = { id:Long? -> navController.navigate(Screens.Detail(id)) }, onBack = { navController.popBackStack() })
     }
 
-    composable<Detail>(
+    composable<Screens.Detail>(
         deepLinks = listOf(
-            navDeepLink<Detail>(basePath = "$scheme/detailScreen"),
-            navDeepLink<Detail>(basePath = "$uri/detailScreen")
+            navDeepLink<Screens.Detail>(basePath = "$scheme/detailScreen"),
+            navDeepLink<Screens.Detail>(basePath = "$uri/detailScreen")
         )
     ) {
-        val detailData = it.toRoute<Detail>()
+        val detailData = it.toRoute<Screens.Detail>()
         Log.d(
             "Deeplink",
-            navDeepLink<Detail>(basePath = "$scheme/detailScreen").uriPattern.toString()
+            navDeepLink<Screens.Detail>(basePath = "$scheme/detailScreen").uriPattern.toString()
         )
         DetailsScreen(id = detailData.id, onBack = { navController.popBackStack() })
     }

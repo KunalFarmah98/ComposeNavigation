@@ -7,34 +7,30 @@ import androidx.navigation.navOptions
 import androidx.navigation.navigation
 
 fun NavGraphBuilder.AuthGraph(navController: NavHostController){
-    navigation<Auth>(startDestination = Login) {
-        composable<Login> {
+    navigation<Screens.Auth>(startDestination = Screens.Login) {
+        composable<Screens.Login> {
             val navOptions = navOptions {
-                popUpTo(Login) {
-                    inclusive = true
-                }
+                popUpTo(0)
             }
             /**
              * Never pass navController to composables, instead expose a callback as an argument
              */
             LoginScreen(
-                onLogin = { response -> navController.navigate(Home(response.token, response.userId), navOptions)},
-                goToRegister = { navController.navigate(Register, navOptions) }
+                onLogin = { response -> navController.navigate(Screens.Home(response.token, response.userId), navOptions)},
+                goToRegister = { navController.navigate(Screens.Register, navOptions) }
             )
         }
 
-        composable<Register> {
+        composable<Screens.Register> {
             val navOptions = navOptions {
-                popUpTo(Register) {
-                    inclusive = true
-                }
+                popUpTo(0)
             }
             /**
              * Never pass navController to composables, instead expose a callback as an argument
              */
             RegisterScreen(
-                onRegister = { response -> navController.navigate(Home(response.token, response.userId), navOptions)},
-                goToLogin = { navController.navigate(Login, navOptions) }
+                onRegister = { response -> navController.navigate(Screens.Home(response.token, response.userId), navOptions)},
+                goToLogin = { navController.navigate(Screens.Login, navOptions) }
             )
         }
     }

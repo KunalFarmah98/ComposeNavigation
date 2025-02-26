@@ -10,26 +10,30 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import kotlinx.serialization.Serializable
 
-@Serializable
-object Auth
 
-@Serializable
-object Login
+sealed class Screens{
+    @Serializable
+    object Auth: Screens()
 
-@Serializable
-object Register
+    @Serializable
+    object Login: Screens()
 
-@Serializable
-data class Tabs(val token: String? = "tabs", val userId: Long? = 20)
+    @Serializable
+    object Register: Screens()
+
+    @Serializable
+    data class Tabs(val token: String? = "tabs", val userId: Long? = 20): Screens()
+
+    @Serializable
+    data class Home(val token: String? = "abcd", val userId: Long? = 0): Screens()
+
+    @Serializable
+    data class Detail(val id: Long? = 0): Screens()
+}
 
 @Serializable
 data class LoginResponse(val token: String, val userId: Long)
 
-@Serializable
-data class Home(val token: String? = "abcd", val userId: Long? = 0)
-
-@Serializable
-data class Detail(val id: Long? = 0)
 
 @Composable
 fun LoginScreen(onLogin: (data: LoginResponse) -> Unit, goToRegister: () -> Unit){
@@ -85,7 +89,7 @@ fun RegisterScreen(onRegister: (data: LoginResponse) -> Unit, goToLogin: () -> U
  * Here HomeScreen is defined with Home as route
  */
 @Composable
-fun HomeScreen(homeData: Home, goToTabs: ()-> Unit, onBack: () -> Unit){
+fun HomeScreen(homeData: Screens.Home, goToTabs: ()-> Unit, onBack: () -> Unit){
     Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
         Text(text = "Home Screen")
         Text(text = "Token: ${homeData.token}")
@@ -131,6 +135,6 @@ fun DetailsScreen(id: Long? = 0, onBack: () -> Unit){
 
 
 @Composable
-fun TabsScreen(data: Tabs, onBack: () -> Unit, onDetails: (id: Long?) -> Unit){
+fun TabsScreen(data: Screens.Tabs, onBack: () -> Unit, onDetails: (id: Long?) -> Unit){
 
 }

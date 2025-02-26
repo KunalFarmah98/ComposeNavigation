@@ -47,11 +47,11 @@ class MainActivity : ComponentActivity() {
         // set names based on the KClass routes
         return when {
             destination == null -> "Example"
-            destination.hasRoute<Login>() -> "Login"
-            destination.hasRoute<Register>() -> "Register"
-            destination.hasRoute<Home>() -> "Home"
-            destination.hasRoute<Tabs>() -> "Tabs"
-            destination.hasRoute<Detail>() -> "Details"
+            destination.hasRoute<Screens.Login>() -> "Login"
+            destination.hasRoute<Screens.Register>() -> "Register"
+            destination.hasRoute<Screens.Home>() -> "Home"
+            destination.hasRoute<Screens.Tabs>() -> "Tabs"
+            destination.hasRoute<Screens.Detail>() -> "Details"
             else -> "Example"
         }
     }
