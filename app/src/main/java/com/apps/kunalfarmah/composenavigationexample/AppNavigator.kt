@@ -11,6 +11,7 @@ fun AppNavigator(navController: NavHostController){
     val uri = "www.kunalfarmah.com"
     val scheme = "composenavigation:/"
     NavHost(
+        route = Screens.Root::class,
         navController = navController,
         startDestination = Screens.Auth
     ){
@@ -18,5 +19,6 @@ fun AppNavigator(navController: NavHostController){
         AuthGraph(navController)
         // Home and Tabs Flow
         HomeGraph(navController, activity, scheme, uri)
+
     }
 }

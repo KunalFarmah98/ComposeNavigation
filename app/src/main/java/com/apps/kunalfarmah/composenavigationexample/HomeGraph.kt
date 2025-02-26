@@ -32,7 +32,7 @@ fun NavGraphBuilder.HomeGraph(navController: NavHostController, activity: Activi
     }
 
     composable<Screens.Tabs> {
-        TabsScreen(data = it.toRoute<Screens.Tabs>(), onDetails = { id:Long? -> navController.navigate(Screens.Detail(id)) }, onBack = { navController.popBackStack() })
+        TabsScreen(navController = navController, data = it.toRoute<Screens.Tabs>())
     }
 
     composable<Screens.Detail>(
