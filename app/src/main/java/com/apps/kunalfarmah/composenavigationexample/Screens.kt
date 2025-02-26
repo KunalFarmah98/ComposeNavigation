@@ -10,9 +10,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import kotlinx.serialization.Serializable
 
+@Serializable
+object Auth
 
 @Serializable
 object Login
+
+@Serializable
+object Register
 
 @Serializable
 data class LoginResponse(val token: String, val userId: Long)
@@ -24,7 +29,7 @@ data class Home(val token: String? = "abcd", val userId: Long? = 0)
 data class Detail(val id: Long? = 0)
 
 @Composable
-fun LoginScreen(onLogin: (data: LoginResponse) -> Unit){
+fun LoginScreen(onLogin: (data: LoginResponse) -> Unit, goToRegister: () -> Unit){
     Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
         Button(
             onClick = {
@@ -32,6 +37,39 @@ fun LoginScreen(onLogin: (data: LoginResponse) -> Unit){
                     token = "token",
                     userId = 1
                 ))
+            }
+        ) {
+            Text("Login")
+        }
+
+        Button(
+            onClick = {
+                goToRegister()
+            }
+        ) {
+            Text("Register")
+        }
+    }
+}
+
+@Composable
+fun RegisterScreen(onRegister: (data: LoginResponse) -> Unit, goToLogin: () -> Unit){
+    Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
+        Button(
+            onClick = {
+                onRegister(LoginResponse(
+                    token = "token",
+                    userId = 1
+                ))
+            }
+
+        ) {
+            Text("Register")
+        }
+
+        Button(
+            onClick = {
+                goToLogin()
             }
         ) {
             Text("Login")
