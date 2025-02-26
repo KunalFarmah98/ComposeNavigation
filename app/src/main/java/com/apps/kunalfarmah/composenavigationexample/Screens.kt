@@ -20,6 +20,9 @@ object Login
 object Register
 
 @Serializable
+data class Tabs(val token: String? = "tabs", val userId: Long? = 20)
+
+@Serializable
 data class LoginResponse(val token: String, val userId: Long)
 
 @Serializable
@@ -82,17 +85,17 @@ fun RegisterScreen(onRegister: (data: LoginResponse) -> Unit, goToLogin: () -> U
  * Here HomeScreen is defined with Home as route
  */
 @Composable
-fun HomeScreen(homeData: Home, onDetail: (id: Long)-> Unit, onBack: () -> Unit){
+fun HomeScreen(homeData: Home, goToTabs: ()-> Unit, onBack: () -> Unit){
     Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
         Text(text = "Home Screen")
         Text(text = "Token: ${homeData.token}")
         Text(text = "UserId: ${homeData.userId}")
         Button(
             onClick = {
-                onDetail(20)
+                goToTabs()
             }
         ) {
-            Text("Go to Details")
+            Text("Go to Tabs")
         }
 
         Button(
@@ -123,5 +126,11 @@ fun DetailsScreen(id: Long? = 0, onBack: () -> Unit){
             Text("Go back")
         }
     }
+
+}
+
+
+@Composable
+fun TabsScreen(data: Tabs, onBack: () -> Unit, onDetails: (id: Long?) -> Unit){
 
 }

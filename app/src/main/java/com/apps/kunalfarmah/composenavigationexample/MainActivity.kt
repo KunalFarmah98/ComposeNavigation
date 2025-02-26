@@ -8,10 +8,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavBackStackEntry
+import androidx.navigation.NavDestination.Companion.hasRoute
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
 import com.apps.kunalfarmah.composenavigationexample.ui.theme.ComposeNavigationExampleTheme
 
 class MainActivity : ComponentActivity() {
@@ -20,12 +21,38 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             ComposeNavigationExampleTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Surface(modifier = Modifier.padding(innerPadding)) {
-                        StackNavigator()
+                val navController = rememberNavController()
+                val backStackEntry = navController.currentBackStackEntryAsState()
+                Scaffold(
+                    modifier = Modifier.fillMaxSize(),
+                    topBar = {
+                        AppBar(
+                            title = getTitle(backStackEntry.value),
+                            navController = navController
+                        )
+                    }
+                )
+
+                { innerPadding ->
+                    Surface(modifier = Modifier.fillMaxSize().padding(innerPadding)) {
+                        AppNavigator(navController)
                     }
                 }
             }
+        }
+    }
+
+    fun getTitle(backStackEntry: NavBackStackEntry?): String {
+        val destination = backStackEntry?.destination
+        // set names based on the KClass routes
+        return when {
+            destination == null -> "Example"
+            destination.hasRoute<Login>() -> "Login"
+            destination.hasRoute<Register>() -> "Register"
+            destination.hasRoute<Home>() -> "Home"
+            destination.hasRoute<Tabs>() -> "Tabs"
+            destination.hasRoute<Detail>() -> "Details"
+            else -> "Example"
         }
     }
 }

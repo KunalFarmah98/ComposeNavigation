@@ -21,7 +21,7 @@ fun NavGraphBuilder.HomeGraph(navController: NavHostController, activity: Activi
          */
         HomeScreen(
             homeData = loginResponse,
-            onDetail = { id -> navController.navigate(Detail(id)) },
+            goToTabs = { navController.navigate(Tabs(loginResponse.token, loginResponse.userId)) },
             onBack = {
                 navController.popBackStack().let {
                     if (!it) {
@@ -29,6 +29,10 @@ fun NavGraphBuilder.HomeGraph(navController: NavHostController, activity: Activi
                     }
                 }
             })
+    }
+
+    composable<Tabs> {
+        TabsScreen(data = it.toRoute<Tabs>(), onDetails = { id:Long? -> navController.navigate(Detail(id)) }, onBack = { navController.popBackStack() })
     }
 
     composable<Detail>(
