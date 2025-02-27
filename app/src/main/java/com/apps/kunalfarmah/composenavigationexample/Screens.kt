@@ -157,6 +157,7 @@ fun TabAScreen(onDetails: (Long?) -> Unit) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
+        Text("Tab A")
         Button(
             onClick = { onDetails(100) }) {
             Text("Go To Details")
@@ -173,6 +174,7 @@ fun TabBScreen(onDetails: (Long?) -> Unit) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
+        Text("Tab B")
         Button(
             onClick = { onDetails(200) }) {
             Text("Go To Details")
@@ -189,6 +191,7 @@ fun TabCScreen(onDetails: (Long?) -> Unit) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
+        Text("Tab C")
         Button(
             onClick = { onDetails(300) }) {
             Text("Go To Details")

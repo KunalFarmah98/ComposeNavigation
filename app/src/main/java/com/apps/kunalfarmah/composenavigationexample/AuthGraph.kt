@@ -10,7 +10,8 @@ fun NavGraphBuilder.AuthGraph(navController: NavHostController){
     navigation<Screens.Auth>(startDestination = Screens.Login) {
         composable<Screens.Login> {
             val navOptions = navOptions {
-                popUpTo(0)
+                popUpTo(Screens.Auth)
+                launchSingleTop = true
             }
             /**
              * Never pass navController to composables, instead expose a callback as an argument
