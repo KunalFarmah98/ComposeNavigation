@@ -1,8 +1,10 @@
 package com.apps.kunalfarmah.composenavigationexample
 
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
@@ -14,13 +16,16 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavDestination.Companion.hasRoute
-import androidx.navigation.NavDestination.Companion.hierarchy
-import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.currentBackStackEntryAsState
 
 @Composable
 fun AppBar(title: String, navController: NavHostController){
@@ -65,10 +70,23 @@ fun BottomTabBar(navController: NavHostController, backStackEntry: NavBackStackE
             BottomNavigation(
                 windowInsets = WindowInsets.navigationBars
             ) {
-                val navBackStackEntry = navController.currentBackStackEntryAsState()
-                val currentDestination = navBackStackEntry.value?.destination
+                var selectedTab by remember { mutableStateOf<BottomTab>(BottomTab.TabA) }
+
+                // Handle Back Press and navigate to TabA
+                BackHandler(enabled = selectedTab != BottomTab.TabA) {
+                    selectedTab = BottomTab.TabA
+                    navController.navigate(BottomTab.TabA) {
+                        // Clear the back stack of other tabs
+                        popUpTo(BottomTab.TabA) {
+                            inclusive = true
+                        }
+                        launchSingleTop = true
+                    }
+                }
+
                 tabs.forEach { route ->
                     BottomNavigationItem(
+                        modifier = Modifier.padding(10.dp),
                         icon = {
                             Icon(
                                 route.icon,
@@ -76,19 +94,10 @@ fun BottomTabBar(navController: NavHostController, backStackEntry: NavBackStackE
                             )
                         },
                         label = { androidx.compose.material3.Text(route.name) },
-                        selected = navController.currentDestination?.hierarchy?.any {
-                            it.hasRoute(
-                                route.route::class
-                            )
-                        } == true,
+                        selected = selectedTab == route.route,
                         onClick = {
+                            selectedTab = route.route
                             navController.navigate(route.route) {
-                                // Pop up to the start destination of the graph to
-                                // avoid building up a large stack of destinations
-                                // on the back stack as users select items
-                                popUpTo(navController.graph.findStartDestination().id) {
-                                    saveState = true
-                                }
                                 // Avoid multiple copies of the same destination when
                                 // reselecting the same item
                                 launchSingleTop = true
@@ -96,7 +105,7 @@ fun BottomTabBar(navController: NavHostController, backStackEntry: NavBackStackE
                                 restoreState = true
                             }
                         },
-                        selectedContentColor = MaterialTheme.colors.primary,
+                        selectedContentColor = Color.White,
                         unselectedContentColor = MaterialTheme.colors.secondary,
                     )
 
