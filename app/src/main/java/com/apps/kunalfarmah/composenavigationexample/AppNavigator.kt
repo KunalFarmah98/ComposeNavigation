@@ -4,6 +4,7 @@ import androidx.activity.compose.LocalActivity
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 
 @Composable
 fun AppNavigator(navController: NavHostController){
@@ -18,9 +19,6 @@ fun AppNavigator(navController: NavHostController){
         //login flow
         AuthGraph(navController)
         // Home Flow
-        HomeGraph(navController, activity, scheme, uri)
-        // Bottom Tabs Flow
-        BottomNavigator(navController)
-
+        MainGraph(navController, activity, scheme, uri)
     }
 }

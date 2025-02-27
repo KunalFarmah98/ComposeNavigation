@@ -3,11 +3,16 @@ package com.apps.kunalfarmah.composenavigationexample
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.rememberNavController
 import kotlinx.serialization.Serializable
 
 
@@ -18,6 +23,9 @@ sealed class Screens {
 
     @Serializable
     object Auth : Screens()
+
+    @Serializable
+    data class Main(val token: String? = "abcd", val userId: Long? = 0): Screens()
 
     @Serializable
     object Login : Screens()
@@ -192,6 +200,28 @@ fun TabCScreen(onDetails: (Long?) -> Unit) {
         Button(
             onClick = { onDetails(300) }) {
             Text("Go To Details")
+        }
+    }
+}
+
+
+@Composable
+fun TabsScreen(navController: NavHostController){
+    val bottomTabNavController = rememberNavController()
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+        bottomBar = {
+            BottomTabBar(bottomTabNavController)
+        }
+    ){ paddingValues ->
+        Column(modifier = Modifier.padding(paddingValues)) {
+            NavHost(
+                navController = bottomTabNavController,
+                route = Screens.Tabs::class,
+                startDestination = BottomTab.TabA
+            ) {
+                BottomNavigator(navController)
+            }
         }
     }
 }
