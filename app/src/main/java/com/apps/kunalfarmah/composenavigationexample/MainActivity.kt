@@ -60,7 +60,6 @@ class MainActivity : ComponentActivity() {
             destination.hasRoute<BottomTab.TabA>() -> "Tab A"
             destination.hasRoute<BottomTab.TabB>() -> "Tab B"
             destination.hasRoute<BottomTab.TabC>() -> "Tab C"
-
             destination.hasRoute<Screens.Detail>() -> "Details"
             else -> "Example"
         }

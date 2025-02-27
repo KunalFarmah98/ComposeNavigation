@@ -4,7 +4,6 @@ import androidx.activity.compose.LocalActivity
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 
 @Composable
 fun AppNavigator(navController: NavHostController){
@@ -16,9 +15,9 @@ fun AppNavigator(navController: NavHostController){
         navController = navController,
         startDestination = Screens.Auth
     ){
-        //login flow
+        // Auth flow
         AuthGraph(navController)
-        // Home Flow
+        // Main Flow
         MainGraph(navController, activity, scheme, uri)
     }
 }

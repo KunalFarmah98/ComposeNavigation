@@ -33,6 +33,7 @@ fun AppBar(title: String, navController: NavHostController) {
         contentColor = Color.White,
         navigationIcon = {
             when (title) {
+                // we want the app to close on pressing home on top level screens
                 "Login", "Register", "Home" -> IconButton(
                     onClick = {
                         navController.popBackStack().let {
@@ -44,7 +45,7 @@ fun AppBar(title: String, navController: NavHostController) {
                 ) {
                     Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Close App")
                 }
-
+                // for every nested screen, we should only go back up 1 level
                 else -> {
                     IconButton(
                         onClick = { navController.navigateUp() }
