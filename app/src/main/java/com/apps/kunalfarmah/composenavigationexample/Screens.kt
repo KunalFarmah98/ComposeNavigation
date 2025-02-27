@@ -184,51 +184,51 @@ fun TabCScreen(onDetails: (Long?) -> Unit){
     }
 }
 
-
-@Composable
-fun TabsScreen(navController: NavHostController){
-    Scaffold(
-        modifier = Modifier.fillMaxSize(),
-        bottomBar = {
-            BottomNavigation(
-                windowInsets = WindowInsets.navigationBars
-            ){
-                val navBackStackEntry = navController.currentBackStackEntryAsState()
-                val currentDestination = navBackStackEntry.value?.destination
-                tabs.forEach { route->
-                    BottomNavigationItem(
-                        icon = { Icon(route.icon, contentDescription = route.name) },
-                        label = { Text(route.name) },
-                        selected = navController.currentDestination?.hierarchy?.any {
-                            it.hasRoute(
-                                route.route::class
-                            )
-                        } == true,
-                        onClick = {
-                            navController.navigate(route.route) {
-                                // Pop up to the start destination of the graph to
-                                // avoid building up a large stack of destinations
-                                // on the back stack as users select items
-                                popUpTo(navController.graph.findStartDestination().id) {
-                                    saveState = true
-                                }
-                                // Avoid multiple copies of the same destination when
-                                // reselecting the same item
-                                launchSingleTop = true
-                                // Restore state when reselecting a previously selected item
-                                restoreState = true
-                            }
-                        },
-                        selectedContentColor = MaterialTheme.colors.primary,
-                        unselectedContentColor = MaterialTheme.colors.secondary,
-                    )
-
-                }
-            }
-        }
-
-    ){ paddingValues ->
-        BottomTabNavigation(navController, Modifier.padding(paddingValues))
-//        Text(modifier = Modifier.padding(paddingValues), text = "Tabs")
-    }
-}
+//
+//@Composable
+//fun TabsScreen(navController: NavHostController){
+//    Scaffold(
+//        modifier = Modifier.fillMaxSize(),
+//        bottomBar = {
+//            BottomNavigation(
+//                windowInsets = WindowInsets.navigationBars
+//            ){
+//                val navBackStackEntry = navController.currentBackStackEntryAsState()
+//                val currentDestination = navBackStackEntry.value?.destination
+//                tabs.forEach { route->
+//                    BottomNavigationItem(
+//                        icon = { Icon(route.icon, contentDescription = route.name) },
+//                        label = { Text(route.name) },
+//                        selected = navController.currentDestination?.hierarchy?.any {
+//                            it.hasRoute(
+//                                route.route::class
+//                            )
+//                        } == true,
+//                        onClick = {
+//                            navController.navigate(route.route) {
+//                                // Pop up to the start destination of the graph to
+//                                // avoid building up a large stack of destinations
+//                                // on the back stack as users select items
+//                                popUpTo(navController.graph.findStartDestination().id) {
+//                                    saveState = true
+//                                }
+//                                // Avoid multiple copies of the same destination when
+//                                // reselecting the same item
+//                                launchSingleTop = true
+//                                // Restore state when reselecting a previously selected item
+//                                restoreState = true
+//                            }
+//                        },
+//                        selectedContentColor = MaterialTheme.colors.primary,
+//                        unselectedContentColor = MaterialTheme.colors.secondary,
+//                    )
+//
+//                }
+//            }
+//        }
+//
+//    ){ paddingValues ->
+//        BottomTabNavigation(navController, Modifier.padding(paddingValues))
+////        Text(modifier = Modifier.padding(paddingValues), text = "Tabs")
+//    }
+//}

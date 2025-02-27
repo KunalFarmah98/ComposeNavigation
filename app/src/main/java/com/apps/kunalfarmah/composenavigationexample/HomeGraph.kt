@@ -31,9 +31,10 @@ fun NavGraphBuilder.HomeGraph(navController: NavHostController, activity: Activi
             })
     }
 
-    composable<Screens.Tabs> {
-        TabsScreen(navController = navController)
-    }
+//    composable<Screens.Tabs> {
+//        TabsScreen(navController = navController)
+//    }
+
 
     composable<Screens.Detail>(
         deepLinks = listOf(

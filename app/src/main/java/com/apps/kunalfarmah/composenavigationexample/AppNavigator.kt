@@ -17,8 +17,10 @@ fun AppNavigator(navController: NavHostController){
     ){
         //login flow
         AuthGraph(navController)
-        // Home and Tabs Flow
+        // Home Flow
         HomeGraph(navController, activity, scheme, uri)
+        // Bottom Tabs Flow
+        BottomNavigator(navController)
 
     }
 }
