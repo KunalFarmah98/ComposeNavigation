@@ -16,9 +16,11 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -61,7 +63,8 @@ fun AppBar(title: String, navController: NavHostController){
 }
 
 @Composable
-fun BottomTabBar(navController: NavHostController, backStackEntry: NavBackStackEntry?){
+fun BottomTabBar(navController: NavHostController, backStackEntry: NavBackStackEntry?, selectedTab: BottomTab = BottomTab.TabA,
+                 onChangeTab: (BottomTab) -> Unit = {}){
 
     val destination = backStackEntry?.destination
     when {
@@ -70,34 +73,37 @@ fun BottomTabBar(navController: NavHostController, backStackEntry: NavBackStackE
             BottomNavigation(
                 windowInsets = WindowInsets.navigationBars
             ) {
-                var selectedTab by remember { mutableStateOf<BottomTab>(BottomTab.TabA) }
-
                 // Handle Back Press and navigate to TabA
-                BackHandler(enabled = selectedTab != BottomTab.TabA) {
-                    selectedTab = BottomTab.TabA
-                    navController.navigate(BottomTab.TabA) {
-                        // Clear the back stack of other tabs
-                        popUpTo(BottomTab.TabA) {
-                            inclusive = true
+                BackHandler{
+                    if(selectedTab != BottomTab.TabA) {
+                        onChangeTab(BottomTab.TabA)
+                        navController.navigate(BottomTab.TabA) {
+                            // Clear the back stack of other tabs
+                            popUpTo(BottomTab.TabA) {
+                                inclusive = true
+                            }
+                            launchSingleTop = true
                         }
-                        launchSingleTop = true
+                    }
+                    else{
+                        navController.navigateUp()
                     }
                 }
 
                 tabs.forEach { route ->
                     BottomNavigationItem(
-                        modifier = Modifier.padding(10.dp),
                         icon = {
                             Icon(
                                 route.icon,
                                 contentDescription = route.name
                             )
                         },
-                        label = { androidx.compose.material3.Text(route.name) },
+                        label = { Text(route.name) },
                         selected = selectedTab == route.route,
                         onClick = {
-                            selectedTab = route.route
+                            onChangeTab(route.route)
                             navController.navigate(route.route) {
+                                popUpTo(BottomTab.TabA)
                                 // Avoid multiple copies of the same destination when
                                 // reselecting the same item
                                 launchSingleTop = true

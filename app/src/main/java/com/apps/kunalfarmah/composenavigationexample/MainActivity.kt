@@ -5,23 +5,16 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.BottomNavigation
-import androidx.compose.material.BottomNavigationItem
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavDestination.Companion.hasRoute
-import androidx.navigation.NavDestination.Companion.hierarchy
-import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.apps.kunalfarmah.composenavigationexample.ui.theme.ComposeNavigationExampleTheme
@@ -34,6 +27,9 @@ class MainActivity : ComponentActivity() {
             ComposeNavigationExampleTheme {
                 val navController = rememberNavController()
                 val backStackEntry = navController.currentBackStackEntryAsState()
+                var selectedTab = remember {
+                    mutableStateOf<BottomTab>(BottomTab.TabA)
+                }
                 LaunchedEffect(backStackEntry) {
                     Log.d("Navigation", backStackEntry.value.toString())
                 }
@@ -46,7 +42,9 @@ class MainActivity : ComponentActivity() {
                         )
                     },
                     bottomBar = {
-                        BottomTabBar(navController, backStackEntry.value)
+                        BottomTabBar(navController, backStackEntry.value, selectedTab.value, onChangeTab = {
+                            selectedTab.value = it
+                        })
                     }
                 )
                 { innerPadding ->
