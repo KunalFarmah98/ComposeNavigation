@@ -106,7 +106,7 @@ fun BottomTabBar(navController: NavHostController, backStackEntry: NavBackStackE
                             }
                         },
                         selectedContentColor = Color.White,
-                        unselectedContentColor = MaterialTheme.colors.secondary,
+                        unselectedContentColor = Color.Gray,
                     )
 
                 }
