@@ -8,11 +8,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navDeepLink
 import androidx.navigation.toRoute
 
-fun NavGraphBuilder.HomeGraph(navController: NavHostController, activity: Activity?, scheme: String, uri: String){
+fun NavGraphBuilder.HomeGraph(navController: NavHostController, activity: Activity?, scheme: String){
     composable<Screens.Home>(
         deepLinks = listOf(
-            navDeepLink<Screens.Home>(basePath = "$scheme/homeScreen"),
-            navDeepLink<Screens.Home>(basePath = "$uri/homeScreen")
+            navDeepLink<Screens.Home>(basePath = "$scheme/homeScreen")
         )
     ) {
         val loginResponse = it.toRoute<Screens.Home>()
@@ -34,15 +33,10 @@ fun NavGraphBuilder.HomeGraph(navController: NavHostController, activity: Activi
 
     composable<Screens.Detail>(
         deepLinks = listOf(
-            navDeepLink<Screens.Detail>(basePath = "$scheme/detailScreen"),
-            navDeepLink<Screens.Detail>(basePath = "$uri/detailScreen")
+            navDeepLink<Screens.Detail>(basePath = "$scheme/detailScreen")
         )
     ) {
         val detailData = it.toRoute<Screens.Detail>()
-        Log.d(
-            "Deeplink",
-            navDeepLink<Screens.Detail>(basePath = "$scheme/detailScreen").uriPattern.toString()
-        )
         DetailsScreen(id = detailData.id, onBack = { navController.popBackStack() })
     }
 }
