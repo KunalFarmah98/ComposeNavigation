@@ -11,7 +11,6 @@ import com.apps.kunalfarmah.composenavigationexample.routes.Screens
 @Composable
 fun AppNavigator(navController: NavHostController){
     val activity = LocalActivity.current
-    val uri = "www.kunalfarmah.com"
     val scheme = "composenavigation:/"
     NavHost(
         route = Screens.Root::class,
@@ -21,6 +20,6 @@ fun AppNavigator(navController: NavHostController){
         // Auth flow
         AuthGraph(navController)
         // Main Flow
-        MainGraph(navController, activity, scheme, uri)
+        MainGraph(navController, activity, scheme)
     }
 }

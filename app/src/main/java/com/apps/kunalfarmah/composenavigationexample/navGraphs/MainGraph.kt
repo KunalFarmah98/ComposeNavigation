@@ -13,14 +13,13 @@ import com.apps.kunalfarmah.composenavigationexample.screens.DetailsScreen
 import com.apps.kunalfarmah.composenavigationexample.screens.HomeScreen
 import com.apps.kunalfarmah.composenavigationexample.screens.TabsScreen
 
-fun NavGraphBuilder.MainGraph(navController: NavHostController, activity: Activity?, scheme: String, uri: String){
+fun NavGraphBuilder.MainGraph(navController: NavHostController, activity: Activity?, scheme: String){
     navigation<Screens.Main>(
         startDestination = Screens.Home::class
     ) {
         composable<Screens.Home>(
             deepLinks = listOf(
-                navDeepLink<Screens.Home>(basePath = "$scheme/homeScreen"),
-                navDeepLink<Screens.Home>(basePath = "$uri/homeScreen")
+                navDeepLink<Screens.Home>(basePath = "$scheme/homeScreen")
             )
         ) {
             val loginResponse = it.toRoute<Screens.Home>()
@@ -45,8 +44,7 @@ fun NavGraphBuilder.MainGraph(navController: NavHostController, activity: Activi
 
         composable<Screens.Detail>(
             deepLinks = listOf(
-                navDeepLink<Screens.Detail>(basePath = "$scheme/detailScreen"),
-                navDeepLink<Screens.Detail>(basePath = "$uri/detailScreen")
+                navDeepLink<Screens.Detail>(basePath = "$scheme/detailScreen")
             )
         ) {
             val detailData = it.toRoute<Screens.Detail>()
