@@ -25,7 +25,7 @@ sealed class Screens {
     object Auth : Screens()
 
     @Serializable
-    data class Main(val token: String? = "abcd", val userId: Long? = 0): Screens()
+    data class Main(val token: String? = "abcd", val userId: Long? = 0) : Screens()
 
     @Serializable
     object Login : Screens()
@@ -166,7 +166,8 @@ fun TabAScreen(onDetails: (Long?) -> Unit) {
     ) {
         Text("Tab A")
         Button(
-            onClick = { onDetails(100) }) {
+            onClick = { onDetails(100) }
+        ) {
             Text("Go To Details")
         }
     }
@@ -206,14 +207,14 @@ fun TabCScreen(onDetails: (Long?) -> Unit) {
 
 
 @Composable
-fun TabsScreen(navController: NavHostController){
+fun TabsScreen(navController: NavHostController) {
     val bottomTabNavController = rememberNavController()
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         bottomBar = {
             BottomTabBar(bottomTabNavController)
         }
-    ){ paddingValues ->
+    ) { paddingValues ->
         Column(modifier = Modifier.padding(paddingValues)) {
             NavHost(
                 navController = bottomTabNavController,
