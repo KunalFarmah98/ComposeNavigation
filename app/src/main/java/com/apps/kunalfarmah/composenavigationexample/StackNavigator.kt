@@ -1,6 +1,5 @@
 package com.apps.kunalfarmah.composenavigationexample
 
-import android.util.Log
 import androidx.activity.compose.LocalActivity
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
@@ -14,7 +13,6 @@ import androidx.navigation.toRoute
 fun StackNavigator(){
     val navController = rememberNavController()
     val activity = LocalActivity.current
-    val uri = "www.kunalfarmah.com"
     val scheme = "composenavigation:/"
     NavHost(
         navController = navController,
@@ -34,8 +32,7 @@ fun StackNavigator(){
 
         composable<Home>(
             deepLinks = listOf(
-                navDeepLink<Home>(basePath = "$scheme/homeScreen"),
-                navDeepLink<Home>(basePath = "$uri/homeScreen")
+                navDeepLink<Home>(basePath = "$scheme/homeScreen")
             )
         ) {
             val loginResponse = it.toRoute<Home>()
@@ -53,14 +50,10 @@ fun StackNavigator(){
 
         composable<Detail>(
             deepLinks = listOf(
-                navDeepLink<Detail>(basePath = "$scheme/detailScreen"),
-                navDeepLink<Detail>(basePath = "$uri/detailScreen")
+                navDeepLink<Detail>(basePath = "$scheme/detailScreen")
             )
         ) {
             val detailData = it.toRoute<Detail>()
-            Log.d("Deeplink",
-                navDeepLink<Detail>(basePath = "$scheme/detailScreen").uriPattern.toString()
-            )
             DetailsScreen(id = detailData.id, onBack = {navController.popBackStack()})
         }
     }
