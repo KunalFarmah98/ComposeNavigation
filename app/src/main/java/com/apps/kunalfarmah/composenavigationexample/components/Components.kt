@@ -1,4 +1,4 @@
-package com.apps.kunalfarmah.composenavigationexample
+package com.apps.kunalfarmah.composenavigationexample.components
 
 import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.layout.WindowInsets
@@ -21,10 +21,14 @@ import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.apps.kunalfarmah.composenavigationexample.routes.tabs
+import com.apps.kunalfarmah.composenavigationexample.util.Utils.getTitle
 
 @Composable
-fun AppBar(title: String, navController: NavHostController) {
+fun AppBar(navController: NavHostController) {
     val activity = LocalActivity.current
+    val backStackEntry = navController.currentBackStackEntryAsState()
+    val title = getTitle(backStackEntry.value)
     TopAppBar(
         title = {
             Text(text = title)

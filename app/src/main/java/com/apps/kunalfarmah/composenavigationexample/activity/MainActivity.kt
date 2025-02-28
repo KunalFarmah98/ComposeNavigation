@@ -1,4 +1,4 @@
-package com.apps.kunalfarmah.composenavigationexample
+package com.apps.kunalfarmah.composenavigationexample.activity
 
 import android.os.Bundle
 import android.util.Log
@@ -15,6 +15,10 @@ import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.apps.kunalfarmah.composenavigationexample.components.AppBar
+import com.apps.kunalfarmah.composenavigationexample.navigators.AppNavigator
+import com.apps.kunalfarmah.composenavigationexample.routes.BottomTab
+import com.apps.kunalfarmah.composenavigationexample.routes.Screens
 import com.apps.kunalfarmah.composenavigationexample.ui.theme.ComposeNavigationExampleTheme
 
 class MainActivity : ComponentActivity() {
@@ -24,44 +28,24 @@ class MainActivity : ComponentActivity() {
         setContent {
             ComposeNavigationExampleTheme {
                 val navController = rememberNavController()
-                val backStackEntry = navController.currentBackStackEntryAsState()
-                LaunchedEffect(backStackEntry) {
-                    Log.d("Navigation", backStackEntry.value.toString())
-                }
                 Scaffold(
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier.Companion.fillMaxSize(),
                     topBar = {
                         AppBar(
-                            title = getTitle(backStackEntry.value),
                             navController = navController
                         )
                     }
                 )
                 { innerPadding ->
-                    Surface(modifier = Modifier
-                        .fillMaxSize()
-                        .padding(innerPadding)) {
+                    Surface(
+                        modifier = Modifier.Companion
+                            .fillMaxSize()
+                            .padding(innerPadding)
+                    ) {
                         AppNavigator(navController)
                     }
                 }
             }
-        }
-    }
-
-    fun getTitle(backStackEntry: NavBackStackEntry?): String {
-        val destination = backStackEntry?.destination
-        // set names based on the KClass routes
-        return when {
-            destination == null -> "Example"
-            destination.hasRoute<Screens.Login>() -> "Login"
-            destination.hasRoute<Screens.Register>() -> "Register"
-            destination.hasRoute<Screens.Home>() -> "Home"
-            destination.hasRoute<Screens.Tabs>() -> "Tabs"
-            destination.hasRoute<BottomTab.TabA>() -> "Tab A"
-            destination.hasRoute<BottomTab.TabB>() -> "Tab B"
-            destination.hasRoute<BottomTab.TabC>() -> "Tab C"
-            destination.hasRoute<Screens.Detail>() -> "Details"
-            else -> "Example"
         }
     }
 }

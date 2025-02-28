@@ -1,4 +1,4 @@
-package com.apps.kunalfarmah.composenavigationexample
+package com.apps.kunalfarmah.composenavigationexample.routes
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
@@ -16,7 +16,6 @@ val tabs = listOf(
 )
 
 sealed class BottomTab{
-
     @Serializable
     object TabA: BottomTab()
     @Serializable

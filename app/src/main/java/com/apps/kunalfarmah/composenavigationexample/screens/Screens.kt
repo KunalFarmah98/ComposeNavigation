@@ -1,4 +1,4 @@
-package com.apps.kunalfarmah.composenavigationexample
+package com.apps.kunalfarmah.composenavigationexample.screens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -11,41 +11,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
-import kotlinx.serialization.Serializable
-
-
-sealed class Screens {
-
-    @Serializable
-    object Root : Screens()
-
-    @Serializable
-    object Auth : Screens()
-
-    @Serializable
-    data class Main(val token: String? = "abcd", val userId: Long? = 0) : Screens()
-
-    @Serializable
-    object Login : Screens()
-
-    @Serializable
-    object Register : Screens()
-
-    @Serializable
-    object Tabs : Screens()
-
-    @Serializable
-    data class Home(val token: String? = "abcd", val userId: Long? = 0) : Screens()
-
-    @Serializable
-    data class Detail(val id: Long? = 0) : Screens()
-}
-
-@Serializable
-data class LoginResponse(val token: String, val userId: Long)
-
+import com.apps.kunalfarmah.composenavigationexample.components.BottomTabBar
+import com.apps.kunalfarmah.composenavigationexample.navigators.BottomNavigator
+import com.apps.kunalfarmah.composenavigationexample.routes.LoginResponse
+import com.apps.kunalfarmah.composenavigationexample.routes.Screens
 
 @Composable
 fun LoginScreen(onLogin: (data: LoginResponse) -> Unit, goToRegister: () -> Unit) {
@@ -208,21 +178,15 @@ fun TabCScreen(onDetails: (Long?) -> Unit) {
 
 @Composable
 fun TabsScreen(navController: NavHostController) {
-    val bottomTabNavController = rememberNavController()
+    val bottomTabsNavController = rememberNavController()
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         bottomBar = {
-            BottomTabBar(bottomTabNavController)
+            BottomTabBar(bottomTabsNavController)
         }
     ) { paddingValues ->
         Column(modifier = Modifier.padding(paddingValues)) {
-            NavHost(
-                navController = bottomTabNavController,
-                route = Screens.Tabs::class,
-                startDestination = BottomTab.TabA
-            ) {
-                BottomNavigator(navController)
-            }
+           BottomNavigator(bottomTabsNavController, navController)
         }
     }
 }

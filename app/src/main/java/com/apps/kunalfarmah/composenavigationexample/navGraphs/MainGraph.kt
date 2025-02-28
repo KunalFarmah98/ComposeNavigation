@@ -1,4 +1,4 @@
-package com.apps.kunalfarmah.composenavigationexample
+package com.apps.kunalfarmah.composenavigationexample.navGraphs
 
 import android.app.Activity
 import android.util.Log
@@ -8,6 +8,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navDeepLink
 import androidx.navigation.navigation
 import androidx.navigation.toRoute
+import com.apps.kunalfarmah.composenavigationexample.routes.Screens
+import com.apps.kunalfarmah.composenavigationexample.screens.DetailsScreen
+import com.apps.kunalfarmah.composenavigationexample.screens.HomeScreen
+import com.apps.kunalfarmah.composenavigationexample.screens.TabsScreen
 
 fun NavGraphBuilder.MainGraph(navController: NavHostController, activity: Activity?, scheme: String, uri: String){
     navigation<Screens.Main>(
