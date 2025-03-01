@@ -13,7 +13,7 @@ fun NavGraphBuilder.AuthGraph(navController: NavHostController) {
     navigation<Screens.Auth>(startDestination = Screens.Login) {
         // pop the Auth graph and start the new screen a fresh
         val navOptions = navOptions {
-            popUpTo(Screens.Auth) { inclusive = true }
+            popUpTo<Screens.Auth> { inclusive = true }
             launchSingleTop = true
         }
         composable<Screens.Login> {
