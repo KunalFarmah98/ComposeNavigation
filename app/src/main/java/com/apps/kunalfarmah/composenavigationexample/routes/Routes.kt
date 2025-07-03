@@ -26,6 +26,9 @@ sealed class Screens {
     data class Home(val token: String? = "abcd", val userId: Long? = 0) : Screens()
 
     @Serializable
+    object TopPager : Screens()
+
+    @Serializable
     data class Detail(val id: Long? = 0) : Screens()
 }
 

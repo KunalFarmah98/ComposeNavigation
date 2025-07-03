@@ -7,12 +7,12 @@ import com.apps.kunalfarmah.composenavigationexample.routes.Screens
 import com.apps.kunalfarmah.composenavigationexample.screens.TabAScreen
 import com.apps.kunalfarmah.composenavigationexample.screens.TabBScreen
 import com.apps.kunalfarmah.composenavigationexample.screens.TabCScreen
+import com.apps.kunalfarmah.composenavigationexample.screens.TopPagerScreen
+import com.apps.kunalfarmah.composenavigationexample.viewModel.MainViewModel
 
-fun NavGraphBuilder.BottomTabsGraph(navController: NavHostController) {
+fun NavGraphBuilder.BottomTabsGraph(navController: NavHostController, mainViewModel: MainViewModel) {
     composable<BottomTab.TabA> {
-        TabAScreen() {
-            navController.navigate(Screens.Detail(it))
-        }
+        TopPagerScreen(mainViewModel)
     }
     composable<BottomTab.TabB> {
         TabBScreen() {

@@ -1,8 +1,16 @@
 package com.apps.kunalfarmah.composenavigationexample.components
 
+import android.util.Log
 import androidx.activity.compose.LocalActivity
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
@@ -12,10 +20,19 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -23,85 +40,158 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.apps.kunalfarmah.composenavigationexample.routes.tabs
 import com.apps.kunalfarmah.composenavigationexample.util.Utils.getTitle
+import com.apps.kunalfarmah.composenavigationexample.viewModel.MainViewModel
+
+
+val TopAppBarExpandedHeight = 100.dp
+val TopAppBarCollapsedHeight = 40.dp
+
+
+val BottomTabBarExpandedHeight = 75.dp
+val BottomTabBarCollapsedHeight = 0.dp
 
 @Composable
-fun AppBar(navController: NavHostController) {
+fun AppBar(navController: NavHostController, viewModel: MainViewModel) {
     val activity = LocalActivity.current
     val backStackEntry = navController.currentBackStackEntryAsState()
     val title = getTitle(backStackEntry.value)
-    TopAppBar(
-        title = {
-            Text(text = title)
-        },
-        backgroundColor = MaterialTheme.colors.primary,
-        contentColor = Color.White,
-        navigationIcon = {
-            when (title) {
-                // we want the app to close on pressing home on top level screens
-                "Login", "Register", "Home" -> IconButton(
-                    onClick = {
-                        navController.popBackStack().let {
-                            if (!it) {
-                                activity?.finish()
-                            }
-                        }
-                    }
-                ) {
-                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Close App")
-                }
-                // for every nested screen, we should only go back up 1 level
-                else -> {
-                    IconButton(
-                        onClick = { navController.navigateUp() }
-                    ) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
-                    }
-                }
-            }
-        },
-        windowInsets = WindowInsets.statusBars
+    var collapseTopAppBar by remember{
+        mutableStateOf(false)
+    }
+    var shouldStartAnimating by remember {
+        mutableStateOf(false)
+    }
+
+    LaunchedEffect(true) {
+        viewModel.topAppBarCollapsedState.collect{
+            shouldStartAnimating = true
+            Log.d("TopAppBarCollapsed",it.toString())
+            collapseTopAppBar = it
+        }
+    }
+
+
+    val appBarHeight by animateDpAsState(
+        targetValue = if (collapseTopAppBar) TopAppBarCollapsedHeight else TopAppBarExpandedHeight,
+        animationSpec = tween(durationMillis = 300), // Adjust animation duration as needed
+        label = "AppBarHeight"
     )
+
+    // Using a Box to control the animated height and clip content
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(appBarHeight) // Animate the height of the Box
+            .clipToBounds()
+    ) {
+        TopAppBar(
+            title = {
+                Text(text = title)
+            },
+            elevation = 0.dp,
+            backgroundColor = MaterialTheme.colors.primary,
+            contentColor = Color.White,
+            actions = {
+                Row(Modifier.padding(end = 15.dp)) {
+                    IconButton(
+                        onClick = {
+                            activity?.finish()
+                        }
+                    ) {
+                        Icon(Icons.Filled.Search, contentDescription = "Search")
+                    }
+                    IconButton(
+                        onClick = {
+                            navController.navigateUp()
+                        }
+
+                    ) {
+                        Icon(Icons.Filled.Settings, contentDescription = "Search")
+                    }
+                }
+            },
+            navigationIcon = {
+                IconButton(
+                    modifier = Modifier.padding(start = 15.dp),
+                    onClick = { navController.navigateUp() }
+                ) {
+                    Icon(Icons.Filled.Menu, contentDescription = "Back")
+                }
+            },
+            windowInsets = WindowInsets.statusBars
+        )
+    }
 }
 
 @Composable
-fun BottomTabBar(navController: NavHostController) {
-    BottomNavigation(
-        windowInsets = WindowInsets.navigationBars
+fun BottomTabBar(navController: NavHostController, viewModel: MainViewModel) {
+    var collapseBottomTabs by remember{
+        mutableStateOf(false)
+    }
+    var shouldStartAnimating by remember {
+        mutableStateOf(false)
+    }
+
+    val animatedHeight by animateDpAsState(
+        targetValue = if (collapseBottomTabs) BottomTabBarCollapsedHeight else BottomTabBarExpandedHeight,
+        animationSpec = tween(durationMillis = 300), // Adjust animation duration as needed
+        label = "AppBarHeight"
+    )
+
+    LaunchedEffect(true) {
+        viewModel.bottomTabCollapsedState.collect{
+            shouldStartAnimating = true
+            Log.d("BottomTabsBarCollapsed",it.toString())
+            collapseBottomTabs = it
+        }
+    }
+    // Using a Box to control the animated height and clip content
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(animatedHeight)
+            .clipToBounds()
     ) {
-        val navBackStackEntry by navController.currentBackStackEntryAsState()
-        val currentDestination = navBackStackEntry?.destination
-        tabs.forEach { item ->
-            BottomNavigationItem(
-                icon = {
-                    Icon(
-                        item.icon,
-                        contentDescription = item.name
-                    )
-                },
-                label = { Text(item.name) },
-                selected = currentDestination?.hierarchy?.any {
+        if (animatedHeight > 0.dp) {
+            BottomNavigation(
+                windowInsets = WindowInsets.navigationBars
+            ) {
+                val navBackStackEntry by navController.currentBackStackEntryAsState()
+                val currentDestination = navBackStackEntry?.destination
+                tabs.forEach { item ->
+                    BottomNavigationItem(
+                        icon = {
+                            Icon(
+                                item.icon,
+                                contentDescription = item.name
+                            )
+                        },
+                        label = { Text(item.name) },
+                        selected = currentDestination?.hierarchy?.any {
                             it.hasRoute(
                                 item.route::class
                             )
                         } == true,
-                onClick = {
-                    navController.navigate(item.route) {
-                        // Pop up to the start destination of the graph to
-                        // avoid building up a large stack of destinations
-                        // on the back stack as users select items
-                        popUpTo(navController.graph.findStartDestination().id) {
-                            saveState = true
-                        }
-                        // Avoid multiple copies of the same destination when
-                        // re-selecting the same item
-                        launchSingleTop = true
-                        // Restore state when re-selecting a previously selected item
-                        restoreState = true
-                    }
-                },
-                selectedContentColor = Color.White,
-                unselectedContentColor = Color.Gray,
-            )
+                        onClick = {
+                            navController.navigate(item.route) {
+                                // Pop up to the start destination of the graph to
+                                // avoid building up a large stack of destinations
+                                // on the back stack as users select items
+                                popUpTo(navController.graph.findStartDestination().id) {
+                                    saveState = true
+                                }
+                                // Avoid multiple copies of the same destination when
+                                // re-selecting the same item
+                                launchSingleTop = true
+                                // Restore state when re-selecting a previously selected item
+                                restoreState = true
+                            }
+                        },
+                        selectedContentColor = Color.White,
+                        unselectedContentColor = Color.Gray,
+                    )
+                }
+            }
         }
     }
 }

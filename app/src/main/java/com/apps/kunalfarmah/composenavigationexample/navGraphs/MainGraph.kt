@@ -12,10 +12,11 @@ import com.apps.kunalfarmah.composenavigationexample.routes.Screens
 import com.apps.kunalfarmah.composenavigationexample.screens.DetailsScreen
 import com.apps.kunalfarmah.composenavigationexample.screens.HomeScreen
 import com.apps.kunalfarmah.composenavigationexample.screens.TabsScreen
+import com.apps.kunalfarmah.composenavigationexample.viewModel.MainViewModel
 
-fun NavGraphBuilder.MainGraph(navController: NavHostController, activity: Activity?, scheme: String){
+fun NavGraphBuilder.MainGraph(navController: NavHostController, activity: Activity?, scheme: String, mainViewModel: MainViewModel){
     navigation<Screens.Main>(
-        startDestination = Screens.Home::class
+        startDestination = Screens.Tabs::class
     ) {
         composable<Screens.Home>(
             deepLinks = listOf(
@@ -39,7 +40,7 @@ fun NavGraphBuilder.MainGraph(navController: NavHostController, activity: Activi
         }
 
         composable<Screens.Tabs> {
-            TabsScreen(navController)
+            TabsScreen(navController, mainViewModel)
         }
 
         composable<Screens.Detail>(

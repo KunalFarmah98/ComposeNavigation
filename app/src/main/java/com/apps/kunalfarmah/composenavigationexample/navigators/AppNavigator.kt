@@ -7,19 +7,20 @@ import androidx.navigation.compose.NavHost
 import com.apps.kunalfarmah.composenavigationexample.navGraphs.AuthGraph
 import com.apps.kunalfarmah.composenavigationexample.navGraphs.MainGraph
 import com.apps.kunalfarmah.composenavigationexample.routes.Screens
+import com.apps.kunalfarmah.composenavigationexample.viewModel.MainViewModel
 
 @Composable
-fun AppNavigator(navController: NavHostController){
+fun AppNavigator(navController: NavHostController, mainViewModel: MainViewModel){
     val activity = LocalActivity.current
     val scheme = "composenavigation:/"
     NavHost(
         route = Screens.Root::class,
         navController = navController,
-        startDestination = Screens.Auth
+        startDestination = Screens.Main::class
     ) {
         // Auth flow
         AuthGraph(navController)
         // Main Flow
-        MainGraph(navController, activity, scheme)
+        MainGraph(navController, activity, scheme, mainViewModel)
     }
 }
