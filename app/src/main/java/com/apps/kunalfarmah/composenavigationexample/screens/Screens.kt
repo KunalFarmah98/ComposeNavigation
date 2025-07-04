@@ -62,13 +62,16 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.apps.kunalfarmah.composenavigationexample.components.BottomTabBar
 import com.apps.kunalfarmah.composenavigationexample.navigators.BottomNavigator
 import com.apps.kunalfarmah.composenavigationexample.routes.LoginResponse
 import com.apps.kunalfarmah.composenavigationexample.routes.Screens
+import com.apps.kunalfarmah.composenavigationexample.ui.theme.Purple40
 import com.apps.kunalfarmah.composenavigationexample.viewModel.MainViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
@@ -178,11 +181,11 @@ data class Tabs(
 )
 
 val topTabs = listOf(
-    Tabs("All", Icons.Outlined.Home, Icons.Filled.Home),
-    Tabs("Prepaid", Icons.Outlined.Phone, Icons.Filled.Phone),
-    Tabs("Profile", Icons.Outlined.Person, Icons.Filled.Person),
-    Tabs("Track\nRequests", Icons.Outlined.Build, Icons.Filled.Build),
-    Tabs("Cart", Icons.Outlined.ShoppingCart, Icons.Filled.ShoppingCart)
+    Tabs("Tab1", Icons.Outlined.Home, Icons.Filled.Home),
+    Tabs("Tab2", Icons.Outlined.Phone, Icons.Filled.Phone),
+    Tabs("Tab3", Icons.Outlined.Person, Icons.Filled.Person),
+    Tabs("Tab4", Icons.Outlined.Build, Icons.Filled.Build),
+    Tabs("Tab5", Icons.Outlined.ShoppingCart, Icons.Filled.ShoppingCart)
 )
 
 @Composable
@@ -209,6 +212,7 @@ fun TopPagerScreen1(mainViewModel: MainViewModel) {
         if (!hasAnimatedIn) {
             hasAnimatedIn = true
         }
+        mainViewModel.setAppBarColor(Color(0xFFECEDFF))
     }
 
     Column(modifier = Modifier.fillMaxSize().background(color = Color(0xFFECEDFF)), horizontalAlignment = Alignment.Start) {
@@ -275,7 +279,7 @@ fun TopPagerScreen1(mainViewModel: MainViewModel) {
 
             // Content for each page
             Box(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier.fillMaxSize().padding(10.dp),
                 contentAlignment = Alignment.Center
             ) {
                 LazyColumn(state = lazyListState) {
@@ -285,7 +289,6 @@ fun TopPagerScreen1(mainViewModel: MainViewModel) {
                             .border(1.dp, color = MaterialTheme.colorScheme.primary), text = "Item $it : ${topTabs[pagerState.currentPage]}")
                     }
                 }
-
             }
         }
     }
@@ -310,11 +313,14 @@ fun TopPagerScreen2(mainViewModel: MainViewModel) {
         label = "TabRowOffsetX"
     )
 
+    val primaryColor = androidx.compose.material.MaterialTheme.colors.primary
+
     // Trigger the animation once when this composable enters the composition
     LaunchedEffect(Unit) {
         if (!hasAnimatedIn) {
             hasAnimatedIn = true
         }
+        mainViewModel.setAppBarColor(primaryColor)
     }
 
     Column(modifier = Modifier.fillMaxSize().background(color = androidx.compose.material.MaterialTheme.colors.primary), horizontalAlignment = Alignment.Start) {
@@ -386,7 +392,7 @@ fun TopPagerScreen2(mainViewModel: MainViewModel) {
 
             // Content for each page
             Box(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier.fillMaxSize().padding(10.dp),
                 contentAlignment = Alignment.Center
             ) {
                 LazyColumn(state = lazyListState) {

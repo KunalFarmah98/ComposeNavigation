@@ -1,5 +1,6 @@
 package com.apps.kunalfarmah.composenavigationexample.viewModel
 
+import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -10,9 +11,11 @@ class MainViewModel:ViewModel() {
     private val _bottomNavCollapsedState = MutableSharedFlow<Boolean>(1)
     private val _topAppBarCollapsedState = MutableSharedFlow<Boolean>(1)
     private val _bottomTabTitle = MutableSharedFlow<String>(1)
+    private val _appBarColor = MutableSharedFlow<Color>(1)
     val bottomTabCollapsedState = _bottomNavCollapsedState.asSharedFlow()
     val topAppBarCollapsedState = _topAppBarCollapsedState.asSharedFlow()
     val bottomTabTitle = _bottomTabTitle.asSharedFlow()
+    val appBarColor = _appBarColor.asSharedFlow()
 
     fun collapseBottomNav(){
         viewModelScope.launch {
@@ -41,6 +44,12 @@ class MainViewModel:ViewModel() {
     fun setBottomTabTitle(title: String) {
         viewModelScope.launch {
             _bottomTabTitle.emit(title)
+        }
+    }
+
+    fun setAppBarColor(color: Color) {
+        viewModelScope.launch {
+            _appBarColor.emit(color)
         }
     }
 

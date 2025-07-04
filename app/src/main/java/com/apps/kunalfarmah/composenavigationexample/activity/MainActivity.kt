@@ -19,6 +19,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -31,6 +32,7 @@ import com.apps.kunalfarmah.composenavigationexample.navigators.AppNavigator
 import com.apps.kunalfarmah.composenavigationexample.routes.BottomTab
 import com.apps.kunalfarmah.composenavigationexample.routes.Screens
 import com.apps.kunalfarmah.composenavigationexample.ui.theme.ComposeNavigationExampleTheme
+import com.apps.kunalfarmah.composenavigationexample.util.Utils.COLOR_HOME
 import com.apps.kunalfarmah.composenavigationexample.viewModel.MainViewModel
 
 @Composable
@@ -54,14 +56,14 @@ class MainActivity : ComponentActivity() {
         setContent {
             ComposeNavigationExampleTheme {
                 val mainViewModel = viewModel<MainViewModel>()
-                var bottomTabTitle by remember { mutableStateOf("Manage") }
+                var bottomTabTitle by remember { mutableStateOf("Home") }
                 LaunchedEffect(true) {
                     mainViewModel.bottomTabTitle.collect{
                         Log.d("bottomTabTitle",it)
                         bottomTabTitle = it
                     }
                 }
-                SetStatusBarIconsDark(bottomTabTitle == "Manage")
+                SetStatusBarIconsDark(bottomTabTitle == "Home")
                 val navController = rememberNavController()
                 Scaffold(
                     modifier = Modifier.Companion.fillMaxSize(),

@@ -25,6 +25,7 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -39,8 +40,10 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.apps.kunalfarmah.composenavigationexample.routes.tabs
+import com.apps.kunalfarmah.composenavigationexample.util.Utils.COLOR_HOME
 import com.apps.kunalfarmah.composenavigationexample.util.Utils.getTitle
 import com.apps.kunalfarmah.composenavigationexample.viewModel.MainViewModel
+import kotlinx.coroutines.delay
 
 
 val TopAppBarExpandedHeight = 100.dp
@@ -59,7 +62,11 @@ fun AppBar(navController: NavHostController, viewModel: MainViewModel) {
         mutableStateOf(false)
     }
     var bottomTabTitle by remember {
-        mutableStateOf("Manage")
+        mutableStateOf("Home")
+    }
+
+    var appBarColor by remember {
+        mutableStateOf(COLOR_HOME)
     }
 
     LaunchedEffect(true) {
@@ -73,6 +80,13 @@ fun AppBar(navController: NavHostController, viewModel: MainViewModel) {
         viewModel.bottomTabTitle.collect{
             Log.d("bottomTabTitle",it.toString())
             bottomTabTitle = it
+        }
+    }
+
+    LaunchedEffect(true) {
+        viewModel.appBarColor.collect{
+            Log.d("appBarColor",it.toString())
+            appBarColor = it
         }
     }
 
@@ -95,8 +109,8 @@ fun AppBar(navController: NavHostController, viewModel: MainViewModel) {
                 Text(text = if(bottomTabTitle != "") bottomTabTitle else title)
             },
             elevation = 0.dp,
-            backgroundColor = if(bottomTabTitle === "Manage") Color(0xFFECEDFF) else MaterialTheme.colors.primary,
-            contentColor = if(bottomTabTitle === "Manage") Color.Black else Color.White,
+            backgroundColor = appBarColor,
+            contentColor = if(appBarColor == COLOR_HOME) Color.Black else Color.White,
             actions = {
                 Row(Modifier.padding(end = 15.dp)) {
                     IconButton(
@@ -163,9 +177,14 @@ fun BottomTabBar(navController: NavHostController, viewModel: MainViewModel) {
                 val currentDestination = navBackStackEntry?.destination
                 tabs.forEach { item ->
                     BottomNavigationItem(
+                        modifier = Modifier.padding(top = 20.dp),
                         icon = {
                             Icon(
-                                item.icon,
+                                if(currentDestination?.hierarchy?.any {
+                                    it.hasRoute(
+                                        item.route::class
+                                    )
+                                } == true) item.iconSelected else item.iconUnselected,
                                 contentDescription = item.name
                             )
                         },

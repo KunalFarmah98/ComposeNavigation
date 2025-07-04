@@ -1,5 +1,6 @@
 package com.apps.kunalfarmah.composenavigationexample.util
 
+import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavDestination.Companion.hasRoute
 import com.apps.kunalfarmah.composenavigationexample.routes.BottomTab
@@ -22,4 +23,6 @@ object Utils {
             else -> "Example"
         }
     }
+
+    val COLOR_HOME = Color(0XFFECEDFF)
 }
