@@ -53,9 +53,16 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             ComposeNavigationExampleTheme {
-                SetStatusBarIconsDark(darkIcons = false)
-                val navController = rememberNavController()
                 val mainViewModel = viewModel<MainViewModel>()
+                var bottomTabTitle by remember { mutableStateOf("Manage") }
+                LaunchedEffect(true) {
+                    mainViewModel.bottomTabTitle.collect{
+                        Log.d("bottomTabTitle",it)
+                        bottomTabTitle = it
+                    }
+                }
+                SetStatusBarIconsDark(bottomTabTitle == "Manage")
+                val navController = rememberNavController()
                 Scaffold(
                     modifier = Modifier.Companion.fillMaxSize(),
                     topBar = {

@@ -10,9 +10,9 @@ import kotlinx.serialization.Serializable
 data class BottomTabs<T : Any>(val name: String, val route: T, val icon: ImageVector)
 
 val tabs = listOf(
-    BottomTabs("TabA", BottomTab.TabA, Icons.Filled.Home),
-    BottomTabs("TabB", BottomTab.TabB, Icons.Filled.Search),
-    BottomTabs("TabC", BottomTab.TabC, Icons.Filled.Settings)
+    BottomTabs("Manage", BottomTab.TabA, Icons.Filled.Home),
+    BottomTabs("Money", BottomTab.TabB, Icons.Filled.Search),
+    BottomTabs("Shop", BottomTab.TabC, Icons.Filled.Settings)
 )
 
 sealed class BottomTab{

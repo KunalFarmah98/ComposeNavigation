@@ -58,15 +58,21 @@ fun AppBar(navController: NavHostController, viewModel: MainViewModel) {
     var collapseTopAppBar by remember{
         mutableStateOf(false)
     }
-    var shouldStartAnimating by remember {
-        mutableStateOf(false)
+    var bottomTabTitle by remember {
+        mutableStateOf("Manage")
     }
 
     LaunchedEffect(true) {
         viewModel.topAppBarCollapsedState.collect{
-            shouldStartAnimating = true
             Log.d("TopAppBarCollapsed",it.toString())
             collapseTopAppBar = it
+        }
+    }
+
+    LaunchedEffect(true) {
+        viewModel.bottomTabTitle.collect{
+            Log.d("bottomTabTitle",it.toString())
+            bottomTabTitle = it
         }
     }
 
@@ -86,11 +92,11 @@ fun AppBar(navController: NavHostController, viewModel: MainViewModel) {
     ) {
         TopAppBar(
             title = {
-                Text(text = title)
+                Text(text = if(bottomTabTitle != "") bottomTabTitle else title)
             },
             elevation = 0.dp,
-            backgroundColor = MaterialTheme.colors.primary,
-            contentColor = Color.White,
+            backgroundColor = if(bottomTabTitle === "Manage") Color(0xFFECEDFF) else MaterialTheme.colors.primary,
+            contentColor = if(bottomTabTitle === "Manage") Color.Black else Color.White,
             actions = {
                 Row(Modifier.padding(end = 15.dp)) {
                     IconButton(
@@ -128,9 +134,6 @@ fun BottomTabBar(navController: NavHostController, viewModel: MainViewModel) {
     var collapseBottomTabs by remember{
         mutableStateOf(false)
     }
-    var shouldStartAnimating by remember {
-        mutableStateOf(false)
-    }
 
     val animatedHeight by animateDpAsState(
         targetValue = if (collapseBottomTabs) BottomTabBarCollapsedHeight else BottomTabBarExpandedHeight,
@@ -140,7 +143,6 @@ fun BottomTabBar(navController: NavHostController, viewModel: MainViewModel) {
 
     LaunchedEffect(true) {
         viewModel.bottomTabCollapsedState.collect{
-            shouldStartAnimating = true
             Log.d("BottomTabsBarCollapsed",it.toString())
             collapseBottomTabs = it
         }
@@ -154,7 +156,8 @@ fun BottomTabBar(navController: NavHostController, viewModel: MainViewModel) {
     ) {
         if (animatedHeight > 0.dp) {
             BottomNavigation(
-                windowInsets = WindowInsets.navigationBars
+                windowInsets = WindowInsets.navigationBars,
+                backgroundColor = Color(0xFFECEDFF)
             ) {
                 val navBackStackEntry by navController.currentBackStackEntryAsState()
                 val currentDestination = navBackStackEntry?.destination
@@ -174,6 +177,7 @@ fun BottomTabBar(navController: NavHostController, viewModel: MainViewModel) {
                         } == true,
                         onClick = {
                             navController.navigate(item.route) {
+                                viewModel.setBottomTabTitle(item.name)
                                 // Pop up to the start destination of the graph to
                                 // avoid building up a large stack of destinations
                                 // on the back stack as users select items
@@ -187,8 +191,8 @@ fun BottomTabBar(navController: NavHostController, viewModel: MainViewModel) {
                                 restoreState = true
                             }
                         },
-                        selectedContentColor = Color.White,
-                        unselectedContentColor = Color.Gray,
+                        selectedContentColor = MaterialTheme.colors.primary,
+                        unselectedContentColor = Color.Black,
                     )
                 }
             }

@@ -9,9 +9,10 @@ import kotlinx.coroutines.launch
 class MainViewModel:ViewModel() {
     private val _bottomNavCollapsedState = MutableSharedFlow<Boolean>(1)
     private val _topAppBarCollapsedState = MutableSharedFlow<Boolean>(1)
-
+    private val _bottomTabTitle = MutableSharedFlow<String>(1)
     val bottomTabCollapsedState = _bottomNavCollapsedState.asSharedFlow()
     val topAppBarCollapsedState = _topAppBarCollapsedState.asSharedFlow()
+    val bottomTabTitle = _bottomTabTitle.asSharedFlow()
 
     fun collapseBottomNav(){
         viewModelScope.launch {
@@ -34,6 +35,12 @@ class MainViewModel:ViewModel() {
     fun expandTopAppBar(){
         viewModelScope.launch {
             _topAppBarCollapsedState.emit(false)
+        }
+    }
+
+    fun setBottomTabTitle(title: String) {
+        viewModelScope.launch {
+            _bottomTabTitle.emit(title)
         }
     }
 

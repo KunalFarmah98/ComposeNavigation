@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.activity.result.launch
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.Orientation
@@ -21,6 +22,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -49,6 +51,8 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.Saver
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
@@ -153,6 +157,20 @@ fun HomeScreen(homeData: Screens.Home, goToTabs: () -> Unit, onBack: () -> Unit)
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun rememberSaveablePagerState(pageCount: () -> Int): PagerState {
+    val initialPage = rememberSaveable { mutableStateOf(0) }
+    val pagerState = rememberPagerState(
+        initialPage = initialPage.value,
+        pageCount = pageCount
+    )
+    LaunchedEffect(pagerState.currentPage) {
+        initialPage.value = pagerState.currentPage
+    }
+    return pagerState
+}
+
 data class Tabs(
     val title: String,
     val unselectedIcon: ImageVector,
@@ -168,13 +186,13 @@ val topTabs = listOf(
 )
 
 @Composable
-fun TopPagerScreen(mainViewModel: MainViewModel) {
-    val pagerState = rememberPagerState(pageCount = { topTabs.size })
+fun TopPagerScreen1(mainViewModel: MainViewModel) {
+    val pagerState = rememberSaveablePagerState(pageCount = { topTabs.size })
     val coroutineScope = rememberCoroutineScope()
 
 
     // --- Animation Logic for Initial Right-to-Left Slide ---
-    var hasAnimatedIn by remember { mutableStateOf(false) }
+    var hasAnimatedIn by rememberSaveable { mutableStateOf(false) }
     val configuration = LocalConfiguration.current
     val screenWidth = configuration.screenWidthDp.dp // Get screen width
 
@@ -188,30 +206,27 @@ fun TopPagerScreen(mainViewModel: MainViewModel) {
 
     // Trigger the animation once when this composable enters the composition
     LaunchedEffect(Unit) {
-        hasAnimatedIn = true // This will change targetValue of offsetX, starting the animation
+        if (!hasAnimatedIn) {
+            hasAnimatedIn = true
+        }
     }
 
-    Column(modifier = Modifier.fillMaxSize().background(color = androidx.compose.material.MaterialTheme.colors.primary), horizontalAlignment = Alignment.Start) {
-        ScrollableTabRow(modifier = Modifier.offset(x = offsetX), containerColor = androidx.compose.material.MaterialTheme.colors.primary, divider = {null}, edgePadding = 20.dp, indicator = {null}, selectedTabIndex = pagerState.currentPage) {
+    Column(modifier = Modifier.fillMaxSize().background(color = Color(0xFFECEDFF)), horizontalAlignment = Alignment.Start) {
+        ScrollableTabRow(modifier = Modifier.offset(x = offsetX), containerColor = Color(0xFFECEDFF), divider = {null}, edgePadding = 20.dp, selectedTabIndex = pagerState.currentPage) {
             topTabs.forEachIndexed { index, tab: Tabs ->
                 Tab(
                     modifier = Modifier
                         .padding(8.dp)
                         .height(85.dp)
-                        .width(95.dp)
-                        .border(
-                            shape = RoundedCornerShape(12.dp),
-                            width = if (pagerState.currentPage == index) 2.dp else 0.dp,
-                            color = if (pagerState.currentPage == index) MaterialTheme.colorScheme.onPrimary else Color.Transparent
-                        ),
+                        .width(95.dp),
                     selected = pagerState.currentPage == index,
                     onClick = {
                         coroutineScope.launch {
                             pagerState.animateScrollToPage(index)
                         }
                     },
-                    selectedContentColor = MaterialTheme.colorScheme.onPrimary,
-                    unselectedContentColor = Color.LightGray,
+                    selectedContentColor = MaterialTheme.colorScheme.primary,
+                    unselectedContentColor = Color.Black,
                     text = { Text(text = tab.title, fontSize = 12.sp) },
                     icon = { Icon(imageVector = if(pagerState.currentPage == index) tab.selectedIcon else tab.unselectedIcon, contentDescription = null) }
                 )
@@ -220,7 +235,7 @@ fun TopPagerScreen(mainViewModel: MainViewModel) {
 
         HorizontalPager(
             state = pagerState,
-            modifier = Modifier.fillMaxSize().background(color = Color.White)
+            modifier = Modifier.fillMaxSize()
         ) {
 
             val lazyListState = rememberLazyListState()
@@ -252,6 +267,117 @@ fun TopPagerScreen(mainViewModel: MainViewModel) {
                                mainViewModel.collapseTopAppBar()
                            }
                        }
+                        // Update previous values for the next comparison
+                        previousFirstVisibleItemIndex = currentIndex
+                        previousFirstVisibleItemScrollOffset = currentOffset
+                    }
+            }
+
+            // Content for each page
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                LazyColumn(state = lazyListState) {
+                    items(100) {
+                        Text(modifier = Modifier
+                            .padding(10.dp)
+                            .border(1.dp, color = MaterialTheme.colorScheme.primary), text = "Item $it : ${topTabs[pagerState.currentPage]}")
+                    }
+                }
+
+            }
+        }
+    }
+}
+
+@Composable
+fun TopPagerScreen2(mainViewModel: MainViewModel) {
+    val pagerState = rememberSaveablePagerState(pageCount = { topTabs.size })
+    val coroutineScope = rememberCoroutineScope()
+
+
+    // --- Animation Logic for Initial Right-to-Left Slide ---
+    var hasAnimatedIn by rememberSaveable { mutableStateOf(false) }
+    val configuration = LocalConfiguration.current
+    val screenWidth = configuration.screenWidthDp.dp // Get screen width
+
+    // The initial offset will be the screen width (to place it offscreen to the right)
+    // The target offset will be 0.dp (to place it onscreen)
+    val offsetX by animateDpAsState(
+        targetValue = if (hasAnimatedIn) 0.dp else screenWidth,
+        animationSpec = tween(durationMillis = 500, delayMillis = 100), // Adjust duration/delay
+        label = "TabRowOffsetX"
+    )
+
+    // Trigger the animation once when this composable enters the composition
+    LaunchedEffect(Unit) {
+        if (!hasAnimatedIn) {
+            hasAnimatedIn = true
+        }
+    }
+
+    Column(modifier = Modifier.fillMaxSize().background(color = androidx.compose.material.MaterialTheme.colors.primary), horizontalAlignment = Alignment.Start) {
+        ScrollableTabRow(modifier = Modifier.offset(x = offsetX), containerColor = androidx.compose.material.MaterialTheme.colors.primary, divider = {null}, edgePadding = 20.dp, indicator = {null}, selectedTabIndex = pagerState.currentPage) {
+            topTabs.forEachIndexed { index, tab: Tabs ->
+                Tab(
+                    modifier = Modifier
+                        .padding(8.dp)
+                        .height(85.dp)
+                        .width(95.dp)
+                        .border(
+                            shape = RoundedCornerShape(12.dp),
+                            width = if (pagerState.currentPage == index) 2.dp else 0.dp,
+                            color = if (pagerState.currentPage == index) MaterialTheme.colorScheme.onPrimary else Color.Transparent
+                        ),
+                    selected = pagerState.currentPage == index,
+                    onClick = {
+                        coroutineScope.launch {
+                            pagerState.animateScrollToPage(index)
+                        }
+                    },
+                    selectedContentColor = MaterialTheme.colorScheme.onPrimary,
+                    unselectedContentColor = Color.LightGray,
+                    text = { Text(text = tab.title, fontSize = 12.sp) },
+                    icon = { Icon(imageVector = if(pagerState.currentPage == index) tab.selectedIcon else tab.unselectedIcon, contentDescription = null) }
+                )
+            }
+        }
+
+        HorizontalPager(
+            state = pagerState,
+            modifier = Modifier.fillMaxSize().background(color = Color(0xFFECEDFF))
+        ) {
+
+            val lazyListState = rememberLazyListState()
+            var previousFirstVisibleItemIndex by remember { mutableIntStateOf(lazyListState.firstVisibleItemIndex) }
+            var previousFirstVisibleItemScrollOffset by remember { mutableIntStateOf(lazyListState.firstVisibleItemScrollOffset) }
+
+            // LaunchedEffect to detect scroll direction
+            LaunchedEffect(lazyListState) {
+                snapshotFlow { // Create a flow of pairs (index, offset)
+                    Pair(lazyListState.firstVisibleItemIndex, lazyListState.firstVisibleItemScrollOffset)
+                }
+                    .collect { (currentIndex, currentOffset) ->
+                        val direction = when {
+                            currentIndex > previousFirstVisibleItemIndex -> 1
+                            currentIndex < previousFirstVisibleItemIndex -> 0
+                            // Indices are the same, compare offsets
+                            currentOffset > previousFirstVisibleItemScrollOffset -> 1
+                            currentOffset < previousFirstVisibleItemScrollOffset -> 0
+                            else -> -1 // Or keep previous direction if no change
+                        }
+
+                        direction.let{
+                            Log.d("Direction", "$direction")
+                            if(it == 0){
+                                mainViewModel.expandTopAppBar()
+                                mainViewModel.expandBottomNav()
+                            }else if( it == 1){
+                                mainViewModel.collapseBottomNav()
+                                mainViewModel.collapseTopAppBar()
+                            }
+                        }
                         // Update previous values for the next comparison
                         previousFirstVisibleItemIndex = currentIndex
                         previousFirstVisibleItemScrollOffset = currentOffset
